@@ -21,19 +21,39 @@
 - name: Change ownership of Tomcat installation
   file: path=/usr/share/tomcat/ owner=tomcat group=tomcat state=directory recurse=yes
 
+# IDS-Specific
+- name: Remove CAS webapp if it exists
+  file: path=/usr/share/tomcat/webapps/CAS state=absent
+
 - name: Configure Tomcat server
   template: src=server.xml dest=/usr/share/tomcat/conf/
-  notify: restart tomcat
 
 - name: Configure Tomcat users
   template: src=tomcat-users.xml dest=/usr/share/tomcat/conf/
-  notify: restart tomcat
 
 - name: Install Tomcat init script
   copy: src=tomcat-initscript.sh dest=/etc/init.d/tomcat mode=0755
+  notify: restart tomcat
 
 - name: Start Tomcat
-  service: name=tomcat state=started enabled=yes
+  service: name=tomcat state=restarted enabled=yes
+  
+# IDS-Specific
+- name: Install Tomcat login script for IDS
+  copy: src=tomcat-bash_profile.sh dest=/usr/share/tomcat/.bash_profile owner=tomcat mode=0644
+
+# IDS-Specific
+- name: Install CAS application in Tomcat
+  copy: src=CAS.war dest=/usr/share/tomcat/webapps owner=tomcat mode=0775
+
+# IDS-Specific
+- name: Wait for CAS WAR file to be installed
+  wait_for: path=/usr/share/tomcat/webapps/CAS/WEB-INF/classes/application-ppe.properties delay=10
+
+# IDS-Specific
+- name: Copy alternate CAS configurataion file for PoC
+  copy: src=application-ppe.txt dest=/usr/share/tomcat/webapps/CAS/WEB-INF/classes/application-ppe.properties  owner=tomcat mode=0664
+  notify: restart tomcat
 
 - name: Install iptables-services
   yum: name=iptables-services state=present
@@ -45,3 +65,6 @@
 
 - name: wait for tomcat to start
   wait_for: port={{http_port}}
+
+- name: wait for CAS to start
+  wait_for: 'path=/usr/share/tomcat/logs/catalina.out search_regex=MQCC_FAILED'

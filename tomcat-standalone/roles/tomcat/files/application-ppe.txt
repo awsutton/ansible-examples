@@ -1,0 +1,71 @@
+#queue config
+parentJCF.queueManager=PPEAPP01
+parentJCF.hostName=idsbxbppemq01
+parentJCF.port=1415
+
+#database connection
+myDataSource.hostname=lnkvmautopdb1
+myDataSource.port=5432
+myDataSource.user=casuser
+myDataSource.password=P@sswordWR
+
+#otc database connection
+otcDataSource.url=jdbc:postgresql://idsbxbppepost02.intdata.com:5433/otc
+
+#quartz
+universeMetaDataTrigger.startDelay=240000
+universeMetaDataTrigger.repeatInterval=300000
+serviceMetricTrigger.startDelay=60000
+serviceMetricTrigger.repeatInterval=2400000
+#never run in PPE as users get the emails - set to run in the year 2020 !
+serviceSuspensionJobTrigger.cronExpression=0 30 07 ? * SUN 2020 
+serviceActivationJobTrigger.cronExpression=0 30 07 ? * SUN 2020 
+clientTestPeriodTrigger.cronExpression=0 30 07 ? * SUN 2020
+extensionHistoryTrigger.cronExpression=0 30 07 ? * SUN 2020
+
+#TNG Messaging
+#this is the TNG's PPE ip address
+SnmpTNG.managementHost1=172.22.114.30
+SnmpTNG.managementHost2=
+emailer.sendEmail=false
+
+#ldap
+ldapSource.url=ldap://idsbxbppeldap.intdata.com:389
+
+##This stops updates across most of cas, used very rarely
+blockBean.blockUpdates=false
+
+datadefn.db.username=data_definition_user
+datadefn.db.password=rovers97
+datadefn.db.hostname=lnkvmautopdb1.eu.intdata.com
+
+#ftp details
+ftshost.host=idsdc3pprd1a.intdata.com
+ftshost.ftphost=idsdc3pprd1a.intdata.com
+ftshost.ftpuser=ftslinuxftp
+ftshost.ftppassword=mupp3t
+ftshost.ownCodeDir=EXTEL$OWNCODE
+
+#detached service ftp host
+detachedVmsFs.host=idsdc3pprd1a.intdata.com
+
+#solr search
+connection-factory.hostname=ftsldnlinppe-app1.eu.intdata.com
+connection-factory.queue-manager=PRDAPP01
+connection-factory.port=1415
+solr-server.primary.hostname=idsbxbppesolr2
+solr-server.primary.port=8080
+solr-server.secondary.hostname=idsbxbppesolr1
+solr-server.secondary.port=8080
+zookeeper.servers=idsbxbppecdh01.intdata.com:2181,idsbxbppecdh02.intdata.com:2181,idsbxbppecdh03.intdata.com:2181/solr
+zookeeper.cloud=N
+
+#istoria
+monitor.rpc.hostname=idsbxbppecomm1
+
+#liferay ip address mapping file
+liferayIPMappingFile.ftpServer1=idsbxbppeliferay1
+liferayIPMappingFile.ftpServer2=
+liferayIPMappingFile.ftpUser=liferay
+liferayIPMappingFile.ftpPassword=rovers97
+liferayIPMappingFile.ftpDirectory=/prod_data/liferay/apps/liferay/webapps/ROOT/WEB-INF/
